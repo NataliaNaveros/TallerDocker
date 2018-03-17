@@ -1,0 +1,81 @@
+root@kalinata:~# docker run --name mysql -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secreto -e MYSQL_DATABASE=taller_apache mysql
+root@kalinata:~# cd Escritorio/
+root@kalinata:~/Escritorio# mkdir docker
+root@kalinata:~/Escritorio# cd docker
+root@kalinata:~/Escritorio/docker# mkdir config_php
+root@kalinata:~/Escritorio/docker# mkdir config_apache
+root@kalinata:~/Escritorio/docker# mkdir wordpress
+root@kalinata:~/Escritorio/docker# ls
+config_apache  config_php  wordpress
+root@kalinata:~/Escritorio/docker# ls
+config_apache  config_php  wordpress
+root@kalinata:~/Escritorio/docker# nano config_php/php.ini
+root@kalinata:~/Escritorio/docker# docker run --name php7 --link mysql:mysql -v /root/Escritorio/docker/wordpress:/var/www/html -v /root/Escritorio/docker/config_php:/usr/local/etc/php -d php:7.0-fpm
+root@kalinata:~/Escritorio/docker# docker exec -it php7 bash
+root@2fcbe410561f:/var/www/html# ls
+root@2fcbe410561f:/var/www/html# cd /usr/local/etc/php
+root@2fcbe410561f:/usr/local/etc/php# ls
+php.ini
+root@2fcbe410561f:/usr/local/etc/php# cat php.ini
+extension=pdo_mysql.so
+extension=mysqli.so
+extension=zip.so
+extension=gd.so
+root@2fcbe410561f:/usr/local/etc/php# cd /var/www/html
+root@2fcbe410561f:/var/www/html# ls /usr/local/lib/php/extensions/no-debug-non-zts-20151012
+opcache.a  opcache.so
+root@2fcbe410561f:/var/www/html# apt-get update
+root@2fcbe410561f:/var/www/html# apt-get install -y libpng12-dev libjpeg-dev libpq-dev
+root@2fcbe410561f:/var/www/html# docker-php-ext-install zip
+root@kalinata:~/Escritorio/docker# docker run --name httpd -d -p 80:80 --link php7:php7 -v /root/Escritorio/docker/wordpress:/var/www/html -v /root/Escritorio/docker/config_apache:/etc/httpd/conf.d httpd
+
+
+
+root@kalinata:~# docker run --name postgres -d -p 3306:3306 -e POSTGRES_ROOT_PASSWORD=secreto -e POSTGRES_DATABASE=taller_nginx postgres
+root@kalinata:~/Escritorio# mkdir docker
+root@kalinata:~# cd Escritorio
+root@kalinata:~/Escritorio# mkdir docker
+root@kalinata:~/Escritorio# cd docker
+root@kalinata:~/Escritorio/docker# mkdir config_php
+root@kalinata:~/Escritorio/docker# mkdir config_nginx
+root@kalinata:~/Escritorio/docker# mkdir factura_script
+root@kalinata:~/Escritorio/docker# ls
+config_nginx  config_php  factura_script
+root@kalinata:~/Escritorio/docker# nano config_php/php.ini
+root@kalinata:~/Escritorio/docker# docker run --name php7 --link postgres:postgres -v /root/Escritorio/docker/factura_script:/var/www/html -v /root/Escritorio/docker/config_php:/usr/local/etc/php -d php:7.0-fpm
+root@kalinata:~/Escritorio/docker# docker exec -it php7 bash
+root@7c739f702bf3:/var/www/html# ls
+root@7c739f702bf3:/var/www/html# cd /usr/local/etc/php
+root@7c739f702bf3:/usr/local/etc/php# ls
+php.ini
+root@7c739f702bf3:/usr/local/etc/php# cat php.ini
+extension=pdo_postgres.so
+extension=postgres.so
+extension=zip.so
+extension=gd.so
+root@7c739f702bf3:/usr/local/etc/php# cd /var/www/html
+root@7c739f702bf3:/var/www/html# ls /usr/local/lib/php/extensions/no-debug-non-zts-20151012
+opcache.a  opcache.so
+root@7c739f702bf3:/var/www/html# apt-get update
+root@7c739f702bf3:/var/www/html# apt-get install -y libpng12-dev libjpeg-dev libpq-dev
+root@7c739f702bf3:/var/www/html# docker-php-ext-install zip
+docker run --name nginx -d -p 80:80 --link php7 -v /root/Escritorio/docker/factura_script:/var/www/html -v /root/Escritorio/docker/config_nginx:/etc/nginx/conf.d nginx
+root@kalinata:~/Escritorio/docker# docker exec -it nginx bash
+root@3b9bd18fcb1b:/# cd /var/www/html/
+root@3b9bd18fcb1b:/var/www/html# ls
+CONTRIBUTING.md  api.php	     controller       index.php    robots.txt
+COPYING		 apigen.neon-sample  cron.php	      install.php  updater.php
+README.md	 base		     extras	      model	   view
+VERSION		 composer.json	     htaccess-sample  raintpl
+root@3b9bd18fcb1b:/var/www/html# 
+root@3b9bd18fcb1b:/var/www/html# cd /etc/nginx/conf.d
+root@3b9bd18fcb1b:/etc/nginx/conf.d# ls
+factura_script.conf
+root@3b9bd18fcb1b:/etc/nginx/conf.d# 
+
+
+
+
+
+
+
